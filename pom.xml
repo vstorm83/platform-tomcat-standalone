@@ -49,6 +49,30 @@
     <!-- LOGBACK implementation to use to manage logs -->
     <ch.qas.logback.version>1.0.7</ch.qas.logback.version>
   </properties>
+  <repositories>
+    <repository>
+      <id>repository.exoplatform.org</id>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <url>http://repository.exoplatform.org/public/</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>repository.exoplatform.org</id>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <url>http://repository.exoplatform.org/public/</url>
+    </pluginRepository>
+  </pluginRepositories>
   <dependencyManagement>
     <dependencies>
       <!-- Import versions from crsh project -->
