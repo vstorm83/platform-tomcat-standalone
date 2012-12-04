@@ -489,12 +489,6 @@
       <version>${org.exoplatform.gwtframework.version}</version>
       <type>war</type>
     </dependency>
-    <dependency>
-      <groupId>org.exoplatform.ide</groupId>
-      <artifactId>exo-ide-client-gadget</artifactId>
-      <version>${org.exoplatform.ide.version}</version>
-      <type>war</type>
-    </dependency>
     <!-- used by org.exoplatform.portal:exo.portal.web.portal and org.exoplatform.portal:exo.portal.web.rest but not declared -->
     <dependency>
       <groupId>org.exoplatform.jcr</groupId>
@@ -569,6 +563,23 @@
           <!-- To remove from org.exoplatform.ide:exo-ide-extension-groovy-server (Issue to open) -->
           <artifactId>servlet-api</artifactId>
           <groupId>javax.servlet</groupId>
+        </exclusion>
+        <!-- reprivate stuffs -->
+        <exclusion>
+          <groupId>org.exoplatform.ide</groupId>
+          <artifactId>exo-ide-extension-chromattic-server</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.exoplatform.ide</groupId>
+          <artifactId>exo-ide-extension-gadget-server</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.exoplatform.ide</groupId>
+          <artifactId>exo-ide-extension-groovy-server</artifactId>
+        </exclusion>
+        <exclusion>
+          <groupId>org.exoplatform.ide</groupId>
+          <artifactId>exo-ide-server</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
