@@ -46,6 +46,8 @@
         <include>*:*:jar</include>
       </includes>
       <excludes>
+        <!-- This artifact is overriden -->
+        <exclude>org.exoplatform.portal:portal.webui.core:jar</exclude>
         <!-- No Apache Tomcat artifacts have to be added in the packaging -->
         <exclude>org.apache.tomcat:*</exclude>
         <!-- commons-logging is forbidden and must be replaced by org.slf4j:jcl-over-slf4j -->
