@@ -46,8 +46,6 @@
         <include>*:*:jar</include>
       </includes>
       <excludes>
-        <!-- This artifact is overriden -->
-        <exclude>org.exoplatform.portal:portal.webui.core:jar</exclude>
         <!-- No Apache Tomcat artifacts have to be added in the packaging -->
         <exclude>org.apache.tomcat:*</exclude>
         <!-- commons-logging is forbidden and must be replaced by org.slf4j:jcl-over-slf4j -->
@@ -100,6 +98,8 @@
         <exclude>org.ow2.spec.ee:ow2-jta-1.1-spec</exclude>
         <!-- Workaround for GTNPORTAL-2782 Decouple gadgets-core from shindig-gadgets -->
         <exclude>org.gatein.shindig:shindig-gadgets</exclude>
+        <!-- This artifact is replaced to override GateIn UI -->
+        <exclude>org.exoplatform.portal:exo.portal.webui.core:jar</exclude>
       </excludes>
       <outputFileNameMapping>${artifact.artifactId}-${artifact.baseVersion}.${artifact.extension}</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
