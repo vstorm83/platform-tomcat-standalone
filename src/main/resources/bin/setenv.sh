@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/sh -eu
 
 #
 # Copyright (C) 2012 eXo Platform SAS.
@@ -38,14 +38,17 @@
 #           /!\     DON'T MODIFY BESIDE THIS LINE      /!\                    #
 #=============================================================================#
 
+# OS specific support.  $var _must_ be set to either true or false.
+cygwin=false
 case "`uname`" in
-  CYGWIN*)
-    echo "=========================================================="
-    echo "Cygwin isn't supported. Please use .bat scripts on Windows"
-    echo "=========================================================="
-    exit -1;
-  ;;
+CYGWIN*) cygwin=true;;
 esac
+
+# For Cygwin, ensure paths are in UNIX format before anything is touched
+if $cygwin; then
+  [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
+  [ -n "$CATALINA_HOME" ] && CATALINA_HOME=`cygpath --unix "$CATALINA_HOME"`
+fi
 
 ########################################
 # Default EXO PLATFORM configuration
@@ -167,14 +170,14 @@ EXO_SERVER_XML_OPTS="${EXO_SERVER_XML_OPTS} -DEXO_DS_PORTAL_URL=${EXO_DS_PORTAL_
 LOGGING_MANAGER=-Dnop
 # Add additional bootstrap entries for logging purpose using SLF4J+Logback
 # SLF4J deps
-CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/lib/slf4j-api-${org.slf4j.version}.jar
-CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/lib/jul-to-slf4j-${org.slf4j.version}.jar
+CLASSPATH="${CATALINA_HOME}/lib/slf4j-api-${org.slf4j.version}.jar"
+CLASSPATH="${CLASSPATH}:${CATALINA_HOME}/lib/jul-to-slf4j-${org.slf4j.version}.jar"
 # LogBack deps
-CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/lib/logback-core-${ch.qas.logback.version}.jar
-CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/lib/logback-classic-${ch.qas.logback.version}.jar
+CLASSPATH="${CLASSPATH}:${CATALINA_HOME}/lib/logback-core-${ch.qas.logback.version}.jar"
+CLASSPATH="${CLASSPATH}:${CATALINA_HOME}/lib/logback-classic-${ch.qas.logback.version}.jar"
 # Janino deps (used by logback for conditional processing in the config file)
-CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/lib/janino-${org.codehaus.janino.version}.jar
-CLASSPATH="$CLASSPATH":"$CATALINA_HOME"/lib/commons-compiler-${org.codehaus.janino.version}.jar
+CLASSPATH="${CLASSPATH}:${CATALINA_HOME}/lib/janino-${org.codehaus.janino.version}.jar"
+CLASSPATH="${CLASSPATH}:${CATALINA_HOME}/lib/commons-compiler-${org.codehaus.janino.version}.jar"
 
 ########################################
 # Compute the CATALINA_OPTS
@@ -186,12 +189,21 @@ if $EXO_DEBUG ; then
   CATALINA_OPTS="${CATALINA_OPTS} -Xrunjdwp:transport=dt_socket,address=${EXO_DEBUG_PORT},server=y,suspend=n"
 fi
 CATALINA_OPTS="${CATALINA_OPTS} -Xms${EXO_JVM_SIZE_MIN} -Xmx${EXO_JVM_SIZE_MAX} -XX:MaxPermSize=${EXO_JVM_PERMSIZE_MAX}"
-CATALINA_OPTS="${CATALINA_OPTS} -Dexo.profiles=${EXO_PROFILES}"
-CATALINA_OPTS="${CATALINA_OPTS} -Djava.security.auth.login.config=${CATALINA_HOME}/conf/jaas.conf"
-CATALINA_OPTS="${CATALINA_OPTS} -Dexo.conf.dir.name=${EXO_CONF_DIR_NAME} -Dexo.conf.dir=${EXO_CONF_DIR}"
-CATALINA_OPTS="${CATALINA_OPTS} -Djavasrc=${JAVA_HOME}/src.zip -Djre.lib=${JAVA_HOME}/jre/lib"
-# Logback configuration file
-CATALINA_OPTS="${CATALINA_OPTS} -Dlogback.configurationFile=${EXO_LOGS_LOGBACK_CONFIG_FILE}"
+CATALINA_OPTS="${CATALINA_OPTS} -Dexo.profiles=\"${EXO_PROFILES}\""
+if $cygwin; then
+  CATALINA_OPTS="${CATALINA_OPTS} -Djava.security.auth.login.config=\"`cygpath --absolute --unix "${CATALINA_HOME}/conf/jaas.conf"`\""
+  CATALINA_OPTS="${CATALINA_OPTS} -Dexo.conf.dir.name=\"${EXO_CONF_DIR_NAME}\" -Dexo.conf.dir=\"`cygpath --absolute --unix "${EXO_CONF_DIR}"`\""
+  CATALINA_OPTS="${CATALINA_OPTS} -Djavasrc=\"`cygpath --absolute --unix "${JAVA_HOME}/src.zip"`\" -Djre.lib=\"`cygpath --absolute --unix "${JAVA_HOME}/jre/lib"`\""
+  # Logback configuration file
+  CATALINA_OPTS="${CATALINA_OPTS} -Dlogback.configurationFile=\"`cygpath --absolute --unix "${EXO_LOGS_LOGBACK_CONFIG_FILE}"`\""
+else
+  CATALINA_OPTS="${CATALINA_OPTS} -Djava.security.auth.login.config=\"${CATALINA_HOME}/conf/jaas.conf\""
+  CATALINA_OPTS="${CATALINA_OPTS} -Dexo.conf.dir.name=\"${EXO_CONF_DIR_NAME}\" -Dexo.conf.dir=\"${EXO_CONF_DIR}\""
+  CATALINA_OPTS="${CATALINA_OPTS} -Djavasrc=\"${JAVA_HOME}/src.zip\" -Djre.lib=\"${JAVA_HOME}/jre/lib\""
+  # Logback configuration file
+  CATALINA_OPTS="${CATALINA_OPTS} -Dlogback.configurationFile=\"${EXO_LOGS_LOGBACK_CONFIG_FILE}\""
+fi
+
 # Define the XML Parser depending on the JVM vendor
 if [ "${EXO_JVM_VENDOR}" = "IBM" ]; then
   CATALINA_OPTS="${CATALINA_OPTS} -Djavax.xml.stream.XMLOutputFactory=com.sun.xml.stream.ZephyrWriterFactory -Djavax.xml.stream.XMLInputFactory=com.sun.xml.stream.ZephyrParserFactory -Djavax.xml.stream.XMLEventFactory=com.sun.xml.stream.events.ZephyrEventFactory"
@@ -202,3 +214,12 @@ CATALINA_OPTS="${CATALINA_OPTS} -Djava.net.preferIPv4Stack=true"
 # Disable EHCache update checker
 CATALINA_OPTS="${CATALINA_OPTS} -Dnet.sf.ehcache.skipUpdateCheck=true"
 CATALINA_OPTS="${CATALINA_OPTS} ${EXO_SERVER_XML_OPTS}"
+
+# For Cygwin, switch paths to Windows format before running java
+if $cygwin; then
+  JAVA_HOME=`cygpath --absolute --windows "$JAVA_HOME"`
+  CATALINA_HOME=`cygpath --absolute --windows "$CATALINA_HOME"`
+  CLASSPATH=`cygpath --path --windows "$CLASSPATH"`
+fi
+
+echo $CATALINA_OPTS
