@@ -99,7 +99,7 @@
         <!-- Workaround for GTNPORTAL-2782 Decouple gadgets-core from shindig-gadgets -->
         <exclude>org.gatein.shindig:shindig-gadgets</exclude>
         <!-- This artifact is replaced to override GateIn UI -->
-        <exclude>org.exoplatform.portal:exo.portal.webui.core:jar</exclude>
+        <exclude>org.gatein.portal:exo.portal.webui.core:jar</exclude>
       </excludes>
       <outputFileNameMapping>${artifact.artifactId}-${artifact.baseVersion}.${artifact.extension}</outputFileNameMapping>
       <useProjectArtifact>false</useProjectArtifact>
