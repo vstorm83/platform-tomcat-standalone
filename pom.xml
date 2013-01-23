@@ -45,6 +45,8 @@
     <!-- Additional LOGBACK dependencies -->
     <org.codehaus.janino.version>2.6.1</org.codehaus.janino.version>
     <org.fusesource.jansi.version>1.9</org.fusesource.jansi.version>
+    <prod.war.filter>*:*:war</prod.war.filter>
+    <context.dir>localhost</context.dir>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -825,6 +827,19 @@
           </plugin>
         </plugins>
       </build>
+    </profile>
+    <profile>
+      <id>plf-dev</id>
+      <activation>
+        <property>
+          <name>plf.dev</name>
+        </property>
+      </activation>
+      <properties>
+	<dev.war.filter>*:*:war</dev.war.filter>
+        <prod.war.filter>false</prod.war.filter>
+	<context.dir>localhost-dev</context.dir>
+      </properties>
     </profile>
   </profiles>
 </project>

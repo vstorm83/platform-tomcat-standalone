@@ -34,9 +34,18 @@
     <dependencySet>
       <outputDirectory>wars</outputDirectory>
       <includes>
-        <include>*:*:war</include>
+        <include>${prod.war.filter}</include>
       </includes>
       <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useProjectAttachments>false</useProjectAttachments>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>wars/${artifact.artifactId}</outputDirectory>
+      <includes>
+        <include>${dev.war.filter}</include>
+      </includes>
+      <unpack>true</unpack>
       <useProjectArtifact>false</useProjectArtifact>
       <useProjectAttachments>false</useProjectAttachments>
     </dependencySet>
@@ -144,7 +153,12 @@
       <filtered>true</filtered>
       <excludes>
         <exclude>**/*.sh</exclude>
+	<exclude>**/conf/Catalina/**</exclude>
       </excludes>
+    </fileSet>
+    <fileSet>
+      <outputDirectory>conf/Catalina/localhost</outputDirectory>
+      <directory>${project.basedir}/src/main/resources/conf/Catalina/${context.dir}</directory>
     </fileSet>
   </fileSets>
 </assembly>
